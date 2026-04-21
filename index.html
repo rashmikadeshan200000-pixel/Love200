@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Kingdom of Love ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --magic-gold: #ffd700;
+            --disney-blue: #1a2a6c;
+            --heart-red: #ff4d6d;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: black; font-family: 'Poppins', sans-serif;
+            overflow-x: hidden; color: white;
+        }
+
+        /* --- Magic Gate / Login Section --- */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #203a43, #000000);
+            z-index: 1000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; transition: 1.5s ease-in-out;
+        }
+
+        .castle-gate {
+            width: 150px; height: 150px;
+            background: url('https://cdn-icons-png.flaticon.com/512/2830/2830305.png') no-repeat center;
+            background-size: contain; filter: drop-shadow(0 0 15px var(--magic-gold));
+            margin-bottom: 20px; animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { transform: scale(1); filter: drop-shadow(0 0 10px var(--magic-gold)); }
+            to { transform: scale(1.05); filter: drop-shadow(0 0 30px #fff); }
+        }
+
+        .login-box input {
+            padding: 12px 20px; border-radius: 25px; border: 2px solid var(--magic-gold);
+            background: rgba(0,0,0,0.5); color: white; text-align: center; outline: none;
+        }
+
+        /* --- Main App Layout --- */
+        #main-content { display: none; opacity: 0; transition: 2s; padding-bottom: 50px; }
+        
+        .page { display: none; padding: 20px; text-align: center; min-height: 80vh; }
+        .page.active { display: block; animation: fadeIn 1s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Timer Section */
+        #timer { font-size: 1.5rem; color: var(--heart-red); font-weight: bold; margin: 20px 0; text-shadow: 0 0 10px rgba(255, 77, 109, 0.4); }
+
+        /* --- XOXO Game Grid --- */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 300px; margin: 20px auto; }
+        .cell { height: 90px; background: rgba(255,255,255,0.05); border: 2px solid var(--magic-gold); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; cursor: pointer; transition: 0.3s; }
+        .cell:hover { background: rgba(255,215,0,0.1); }
+
+        /* --- Secret Chat --- */
+        #chat-display { height: 350px; overflow-y: auto; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 15px; margin: 20px auto; max-width: 400px; display: flex; flex-direction: column; gap: 8px; border: 1px solid rgba(255,215,0,0.2); }
+        .msg { padding: 10px 15px; border-radius: 18px; max-width: 75%; font-size: 0.9rem; word-wrap: break-word; }
+        .my-msg { background: var(--heart-red); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .other-msg { background: #444; align-self: flex-start; border-bottom-left-radius: 2px; }
+
+        /* --- Photo Gallery --- */
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
+        .photo-frame { background: white; padding: 10px 10px 30px 10px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: rotate(calc(var(--r) * 1deg)); margin: 10px; }
+        .photo-frame img { width: 100%; height: 250px; object-fit: cover; }
+
+        /* Buttons */
+        .magic-btn { background: var(--magic-gold); border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; color: black; margin: 5px; }
+
+        /* Pop Names Animation */
+        .pop-name { position: fixed; font-family: 'Dancing Script'; font-weight: bold; pointer-events: none; animation: magicPop 5s forwards; z-index: 99; }
+        @keyframes magicPop { 0% { transform: scale(0); opacity: 0; } 20% { transform: scale(1.2); opacity: 1; } 100% { transform: translateY(-150px); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="castle-gate"></div>
+        <div class="login-box">
+            <h1 style="color: var(--magic-gold); font-family: 'Dancing Script';">Kingdom of Love</h1>
+            <input type="password" id="pass" placeholder="Enter Magic Word...">
+            <br><br>
+            <button class="magic-btn" onclick="unlock()">Open Gate</button>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <nav style="padding: 20px; background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 100;">
+            <button class="magic-btn" onclick="showPage('home')">Home</button>
+            <button class="magic-btn" onclick="showPage('chat')">Chat 💌</button>
+            <button class="magic-btn" onclick="showPage('game')">Game 🎮</button>
+        </nav>
+
+        <div id="home" class="page active">
+            <h1 style="font-family:'Dancing Script'; color:var(--magic-gold); font-size: 3.5rem; margin-bottom: 0;">Rashmika ❤️ Sachini</h1>
+            <div id="timer">Calculating Forever...</div>
+            <div class="gallery" id="photo-gallery"></div>
+        </div>
+
+        <div id="chat" class="page">
+            <h2 style="font-family:'Dancing Script'; color: var(--heart-red); font-size: 2.5rem;">Secret Letters</h2>
+            <div id="chat-display"></div>
+            <div style="max-width: 400px; margin: 0 auto; display: flex; gap: 5px;">
+                <input type="text" id="chatMsg" placeholder="Write something..." style="flex:1; padding:12px; border-radius:20px; border:none;">
+                <button class="magic-btn" onclick="sendMsg()" style="margin:0;">✈️</button>
+            </div>
+        </div>
+
+        <div id="game" class="page">
+            <h2 id="game-info" style="color: var(--magic-gold); font-size: 2rem;">XOXO Challenge</h2>
+            <div class="grid" id="board">
+                <div class="cell" onclick="move(0)"></div>
+                <div class="cell" onclick="move(1)"></div>
+                <div class="cell" onclick="move(2)"></div>
+                <div class="cell" onclick="move(3)"></div>
+                <div class="cell" onclick="move(4)"></div>
+                <div class="cell" onclick="move(5)"></div>
+                <div class="cell" onclick="move(6)"></div>
+                <div class="cell" onclick="move(7)"></div>
+                <div class="cell" onclick="move(8)"></div>
+            </div>
+            <button class="magic-btn" onclick="resetGame()" style="background:#444; color:white;">Reset</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
+
+    <script>
+        // --- Firebase Config ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLpLXvC-mVEcA15jPgPsL7UaphpyZ648o",
+            authDomain: "love-chat-a2ddc.firebaseapp.com",
+            databaseURL: "https://love-chat-a2ddc-default-rtdb.firebaseio.com",
+            projectId: "love-chat-a2ddc"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let user = "";
+        let symbol = "";
+
+        // --- Navigation ---
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // --- Unlock Gate ---
+        function unlock() {
+            const pw = document.getElementById('pass').value;
+            if(pw === "@Sachini" || pw === "@Rashmika") {
+                user = pw.replace("@", "");
+                symbol = (user === "Rashmika") ? "X" : "O";
+                document.getElementById('login-overlay').style.transform = "translateY(-100%)";
+                document.getElementById('main-content').style.display = "block";
+                setTimeout(() => {
+                    document.getElementById('main-content').style.opacity = "1";
+                    startMagic();
+                }, 500);
+            } else { alert("The Magic Word is wrong!"); }
+        }
+
+        // --- Timer ---
+        setInterval(() => {
+            const diff = new Date() - new Date("2026-04-07T00:00:00");
+            const d = Math.floor(diff/86400000), h = Math.floor((diff/3600000)%24), m = Math.floor((diff/60000)%60), s = Math.floor((diff/1000)%60);
+            document.getElementById('timer').innerHTML = `${d} Days <br> ${h}h : ${m}m : ${s}s`;
+        }, 1000);
+
+        // --- Photo Auto Loader ---
+        const gallery = document.getElementById('photo-gallery');
+        for (let i = 1; i <= 5000; i++) {
+            let img = new Image();
+            img.src = `images/img${i}.jpg`;
+            img.onload = function() {
+                const frame = document.createElement('div');
+                frame.className = 'photo-frame';
+                frame.style.setProperty('--r', (Math.random() * 6 - 3));
+                frame.appendChild(this);
+                gallery.appendChild(frame);
+            };
+        }
+
+        // --- Real-time Chat ---
+        function sendMsg() {
+            const input = document.getElementById('chatMsg');
+            if(input.value.trim()) {
+                db.ref('messages').push({ user: user, text: input.value });
+                input.value = "";
+            }
+        }
+        db.ref('messages').limitToLast(20).on('value', s => {
+            const display = document.getElementById('chat-display');
+            display.innerHTML = "";
+            s.forEach(c => {
+                const m = c.val();
+                const div = document.createElement('div');
+                div.className = `msg ${m.user === user ? 'my-msg' : 'other-msg'}`;
+                div.innerText = m.text;
+                display.appendChild(div);
+            });
+            display.scrollTop = display.scrollHeight;
+        });
+
+        // --- Online Game ---
+        function move(i) {
+            db.ref('game').once('value', s => {
+                let d = s.val() || { b: ["","","","","","","","",""], t: "X" };
+                if(d.t === symbol && d.b[i] === "") {
+                    d.b[i] = symbol; d.t = (symbol === "X") ? "O" : "X";
+                    db.ref('game').set(d);
+                }
+            });
+        }
+        db.ref('game').on('value', s => {
+            const d = s.val(); if(!d) return;
+            const cells = document.querySelectorAll('.cell');
+            d.b.forEach((v, i) => { cells[i].innerText = v; cells[i].style.color = v=="X"?"#ff4d6d":"#ffd700"; });
+            document.getElementById('game-info').innerText = (d.t === symbol) ? "Your Turn!" : "Partner's Turn...";
+        });
+        function resetGame() { db.ref('game').set({ b: ["","","","","","","","",""], t: "X" }); }
+
+        // --- Multilanguage Pop Names (NO SINHALA) ---
+        const names = [
+            "Sachini", "Rashmika", // English
+            "साचिनी", "रश्मिका", // Hindi
+            "サチニ", "ラシュミカ", // Japanese
+            "사치니", "라슈미카", // Korean
+            "萨奇尼", "拉什米卡", // Chinese
+            "ซาชินี", "ราชมิกา", // Thai
+            "Love", "Queen", "My World", "Everything", "Amour", "Liebe"
+        ];
+
+        function startMagic() {
+            setInterval(() => {
+                const n = document.createElement('div');
+                n.className = 'pop-name';
+                n.innerText = names[Math.floor(Math.random() * names.length)];
+                n.style.left = Math.random() * 80 + 'vw';
+                n.style.top = Math.random() * 80 + 'vh';
+                n.style.color = `hsl(${Math.random() * 360}, 70%, 70%)`;
+                n.style.fontSize = (Math.random() * 1.2 + 1) + 'rem';
+                document.body.appendChild(n);
+                setTimeout(() => n.remove(), 5000);
+            }, 1800);
+        }
+    </script>
+</body>
+</html>
